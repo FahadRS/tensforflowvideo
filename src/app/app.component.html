@@ -1,0 +1,48 @@
+<!-- <div>
+  <img crossorigin="anonymous" #img style="height:500; width:700" src="https://image.shutterstock.com/image-photo/portrait-confident-peoples-colleagues-meeting-600w-1223281312.jpg" />
+  <canvas style="height:500; width:700; background-color: blue;"></canvas>
+
+</div>
+
+<button (click)="detectObjects()">Detect</button> -->
+
+
+<button (click)="detectVideoFrames()">Detect</button>
+
+Duration {{ operationDuration | json }}
+Remiaing Duration  {{ remainigDuration }}
+
+{{ currentDetections | json }}
+<h2 [style]="{textAlign: 'center'}">Angular TensorFlowJS Demo</h2>
+
+<div class="video-container">
+  <video class="video-area" (canplay)="onVideoCanPlay()" loop crossorigin="anonymous" #videoRef
+    src="assets/londonVideo.mp4" controls>
+  </video>
+
+</div>
+
+<svg [ngStyle]="{ top: videoBoundingRect.top+'px', left: videoBoundingRect.left+'px'}"
+  [attr.width]="(videoBoundingRect.width-1)+'px'" [attr.height]="(videoBoundingRect.height-1)+'px'"
+  [attr.viewBox]=" '0 0 '+videoBoundingRect.width+' '+ videoBoundingRect.height "
+  *ngIf="videoBoundingRect && svgEnabled" class="svg-area" #svgRef>
+  <defs>
+    <filter x="0" y="0" width="1" height="1" id="solid">
+      <feFlood flood-color="black" />
+      <feComposite in="SourceGraphic" in2="BackgroundImage" operator="atop" result="comp" />
+    </filter>
+  </defs>
+
+  <g *ngFor="let detection of currentDetections">
+    <rect [attr.x]="detection.x+'px'" [attr.y]="detection.y+'px'" [attr.width]="detection.width+'px'"
+      [attr.height]="detection.height+'px'" style="fill: transparent;stroke-width:2;stroke:rgb(255,0,0)" />
+    <text filter="url(#solid)" [attr.x]="detection.x+'px'" [attr.y]="detection.y+17+'px'" font-family="sans"
+      font-size="18" fill="white">{{detection.label}}</text>
+  </g>
+
+</svg>
+
+<br>
+<button (click)="videoRef.play()" >PLAY</button>
+<button (click)="videoRef.pause()" >PAUSE</button>
+<button (click)="toggleSvgOverlay()" >TOGGLE OVERLAY</button>
